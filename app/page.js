@@ -1,10 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 
-import MarkerContainer from "@/components/MarkerContainer";
-import { MapContainer, TileLayer } from "react-leaflet";
+import Image from "next/image";
+import dynamic from "next/dynamic";
+
+const Map = dynamic(() => import("@/components/LeafletMap"), {
+  loading: () => <p>Loading...</p>,
+  ssr: false,
+});
 
 export default function page() {
   const [data, setData] = useState(null);
@@ -118,21 +122,7 @@ export default function page() {
         )}
       </div>
 
-      {data && (
-        <div className=" z-10 flex flex-grow items-center justify-center">
-          <MapContainer
-            center={position}
-            zoom={13}
-            style={{ height: "100%", width: "100%" }}
-          >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            />
-            <MarkerContainer data={data} />
-          </MapContainer>
-        </div>
-      )}
+      {data && <Map data={data} />}
     </section>
   );
 }
